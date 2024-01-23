@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	//"errors"
 	"fmt"
 	"os"
 	"strconv"
@@ -146,12 +147,6 @@ func calculateExpressionArab(expression string) (int, error) {
 func calculateExpressionRome(expression string) (string, error) {
 
 	tokens := strings.Fields(expression)
-	/*
-		if len(tokens) != 3 {
-			return "", fmt.Errorf("Неверный формат выражения")
-
-		}
-	*/
 
 	num1Str := tokens[0]
 	operator := tokens[1]
@@ -187,8 +182,7 @@ func calculateExpressionRome(expression string) (string, error) {
 	}
 
 	if result < 0 {
-		return "", fmt.Errorf("В римской системе нет отрицательных чисел.")
-
+		panic("В римской системе нет отрицательных чисел.")
 	}
 	resultStr := arabicToRoman(result)
 	return resultStr, nil
@@ -200,30 +194,31 @@ func schitatStr(text string) {
 
 	tokens := strings.Fields(expression3)
 
-	if len(tokens) != 3 {
-		//fmt.Errorf("Неверный формат выражения")
-		panic("Неверный формат выражения")
-	}
-
-	num1Str := tokens[0]
-	num2Str := tokens[2]
-
-	if isRomanNumeral(num1Str) && isRomanNumeral(num2Str) {
-		result3, err3 := calculateExpressionRome(expression3)
-		if err3 != nil {
-			fmt.Println("Ошибка:", err3)
-		} else {
-			fmt.Printf("Результат: %s\n", result3)
-		}
+	if len(tokens) < 3 {
+		panic("Строка не является математической операцией.")
+	} else if len(tokens) > 4 {
+		fmt.Println(len(text))
+		panic("Формат математической операции не удовлетворяет заданию — два операнда и один оператор (+, -, /, *).")
 	} else {
-		result2, err2 := calculateExpressionArab(expression3)
-		if err2 != nil {
-			fmt.Println("Ошибка:", err2)
+		num1Str := tokens[0]
+		num2Str := tokens[2]
+
+		if isRomanNumeral(num1Str) && isRomanNumeral(num2Str) && isRomanNumeral(num1Str) == isRomanNumeral(num2Str) {
+			result3, err3 := calculateExpressionRome(expression3)
+			if err3 != nil {
+				panic("Используются одновременно разные системы счисления.")
+			} else {
+				fmt.Printf("Результат: %s\n", result3)
+			}
 		} else {
-			fmt.Printf("Результат: %v\n", result2)
+			result2, err2 := calculateExpressionArab(expression3)
+			if err2 != nil {
+				panic("Используются одновременно разные системы счисления.")
+			} else {
+				fmt.Printf("Результат: %v\n", result2)
+			}
 		}
 	}
-
 }
 
 func main() {
